@@ -12,5 +12,5 @@
 
 附赠示例图的一个布局存档，存档地址为Application.persistentDataPath/Saves。
 
-![image](https://img-blog.csdnimg.cn/2019082220155088.png))
+![image](https://img-blog.csdnimg.cn/2019082220155088.png)
 
