@@ -68,7 +68,7 @@ public class UIManager : MonoBehaviour
 			AddButton.SetActive(false);
 			SaveButton.SetActive(false);
 			isConfig = false;
-		
+			ToolControlTaskBar.HideTitle();
 		}
 		else
 		{
@@ -81,7 +81,7 @@ public class UIManager : MonoBehaviour
 			Return.SetActive(true);
 			AddButton.SetActive(true);
 			isConfig = true;
-			
+			ToolControlTaskBar.ShowTitle();
 		}
 	}
 

@@ -34,7 +34,7 @@ public class JingJue : MonoBehaviour
         Instance = this;
 	}
 
-    public bool IsFocus;
+   
 	private void Start()
 	{
         

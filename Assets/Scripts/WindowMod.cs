@@ -3,6 +3,7 @@ using System.Collections;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class ToolControlTaskBar
 {
@@ -10,12 +11,22 @@ public class ToolControlTaskBar
     public static extern int ShowWindow(int hwnd, int nCmdShow); //这是显示任务栏
     [DllImport("user32.dll")]
     public static extern int FindWindow(string lpClassName, string lpWindowName); //这是隐藏任务栏
+    [DllImport("User32.dll", EntryPoint = "SetWindowLong")]
+    private static extern int SetWindowLong(int hWnd, int nIndex, long dwNewLong);
+
+    [DllImport("User32.dll", EntryPoint = "SetWindowLong")]
+    private static extern int GetWindowLong(int hWnd, int nIndex);
+
+
 
     private const int SW_HIDE = 0;  //hied task bar
     private const int SW_RESTORE = 9;//show task bar
                                      // Use this for initialization
 
-
+    const int GWL_STYLE = -16;
+    private const int WS_CAPTION = 0xC00000;
+    private const int WS_SIZEBOX = 0x040000;
+    private const int WS_SYSMENU = 0x00080000;
     /// <summary>
     /// show TaskBar
     /// </summary>
@@ -30,6 +41,22 @@ public class ToolControlTaskBar
     {
         ShowWindow(FindWindow("Shell_TrayWnd", null), SW_HIDE);
     }
+    public static void ShowTitle()
+    {
+        int hwd = FindWindow(null, Application.productName);
+
+        SetWindowLong(hwd, GWL_STYLE, 369164288 | WS_CAPTION | WS_SIZEBOX | WS_SYSMENU);
+    }
+    /// <summary>
+    /// Hide TaskBar
+    /// </summary>
+    public static void HideTitle()
+    {
+        int hwd = FindWindow(null, Application.productName);
+
+        SetWindowLong(hwd, GWL_STYLE, 369164288 );
+    }
+
 }
 
 
@@ -47,7 +74,7 @@ public class WindowMod : MonoBehaviour
     private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
     [DllImport("User32.dll", EntryPoint = "SetWindowLong")]
-    private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+    private static extern int SetWindowLong(IntPtr hWnd, int nIndex, long dwNewLong);
 
     [DllImport("User32.dll", EntryPoint = "GetWindowLong")]
     private static extern int GetWindowLong(IntPtr hWnd, int dwNewLong);
@@ -128,9 +155,10 @@ public class WindowMod : MonoBehaviour
     }
 
     public ScreenDirection CurDirection = ScreenDirection.defaultDirection;
-
+    public static WindowMod Instance;
     void Awake()
     {
+        Instance = this;
         ToolControlTaskBar.HideTaskBar();
         Xscreen = (int)GetSystemMetrics(SM_CXSCREEN);
         Yscreen = (int)GetSystemMetrics(SM_CYSCREEN);
@@ -188,8 +216,12 @@ public class WindowMod : MonoBehaviour
             Screen.SetResolution(windowWidth, windowWidth, false);
             screenPosition = new Rect(windowLeft, windowTop, windowWidth, windowWidth);
         }
+        ToolControlTaskBar.HideTitle();
     }
 
+
+   
+    
     int i = 0;
     void Update()
     {
@@ -245,6 +277,10 @@ public class WindowMod : MonoBehaviour
         i++;
 
     }
+    
+
+
+
 
     private void OnDestroy()
     {
